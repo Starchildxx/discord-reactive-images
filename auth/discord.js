@@ -78,7 +78,7 @@ export default function (ctx) {
       return
     }
 
-    const jwt = await ctx.encodeJWT(res, {
+    const jwt = await ctx.encodeJWT({
       id: userData.id,
       token: tokenData.access_token,
       username: userData.username,
