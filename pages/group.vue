@@ -78,13 +78,10 @@ export default {
       this.members.forEach(async (m) => {
         if (this.avatars.has(m.id) || this.pendingAvatars.has(m.id)) return
         this.pendingAvatars.add(m.id)
-        try {
-          this.avatars.set(m.id, await this.$api.get_image(m.id))
-          this.avatarStateCounter++
-        } catch (e) {
-          console.error(e)
+
+        if (this.configSocket && this.configSocket.readyState === 1) {
+          this.configSocket.send(JSON.stringify({ avatar: m.id }))
         }
-        this.pendingAvatars.delete(m.id)
       })
     },
     config(config) {
@@ -95,18 +92,33 @@ export default {
       if (jwt === oldJWT) return
 
       if (this.configSocket) {
-        this.configSocket.onerror = null
+        this.configSocket.onclose = null
         this.configSocket.close()
       }
 
       const connect = () => {
-        this.configSocket = new EventSource(`/auth/config?jwt=${jwt}`)
+        this.configSocket = new WebSocket(`${location.scheme === 'https' ? 'wss' : 'ws'}://${location.host}/api`)
+        this.configSocket.onopen = () => {
+          this.configSocket.send(JSON.stringify({ jwt }))
+          for (const [id, _] of this.avatars) {
+            this.configSocket.send(JSON.stringify({ avatar: id }))
+          }
+          for (const id of this.pendingAvatars) {
+            this.configSocket.send(JSON.stringify({ avatar: id }))
+          }
+        }
         this.configSocket.onmessage = (event) => {
           const d = JSON.parse(event.data)
-          this.config = Object.assign({}, this.config, d)
+          this.config = Object.assign({}, this.config, d.config)
+          for (const [id, avatar] of Object.entries(d.avatars || {})) {
+            this.avatars.set(id, avatar)
+            this.pendingAvatars.delete(id)
+          }
+          this.memberStateCounter++
         }
-        this.configSocket.onerror = (err) => {
-          console.error('EventSource failed:', err)
+        this.configSocket.onclose = (err) => {
+          console.error('Config WS failed:', err)
+          this.configSocket = null
           setTimeout(connect, 1000)
         }
       }

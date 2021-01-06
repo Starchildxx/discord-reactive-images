@@ -7,7 +7,7 @@ export default function (globalState) {
   app.use(cookieParser())
 
   const methods = Auth(globalState)
-  for (const [path, handlerFactory] of Object.entries(methods)) {
+  for (const [path, handlerFactory] of Object.entries(methods || {})) {
     app.use('/' + path, handlerFactory())
   }
 

@@ -2,6 +2,13 @@ import path from 'path'
 import fs from 'fs'
 import globby from 'globby'
 
+import ws from 'ws'
+import express from 'express'
+import API from './handler_api'
+import Auth from './handler_auth'
+import Websockets from './handler_ws'
+
+
 const defaultOptions = {
   // folder to load API methods from
   dir: '~/api',
@@ -53,9 +60,19 @@ export default async function NuxtAPI(moduleOptions) {
     options,
   })
 
+  const globalState = {}
+  const app = express()
+  app.use('/api', API(globalState))
+  app.use('/auth', Auth(globalState))
+
   this.addServerMiddleware({
     path: '/',
-    handler: path.resolve(__dirname, 'handler.js'),
+    handler: app,
+  })
+
+  nuxt.hook('listen', server => {
+    const wss = new ws.Server({ server })
+    Websockets(wss, globalState)
   })
 
 

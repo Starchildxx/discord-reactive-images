@@ -14,7 +14,7 @@ export default async function (ctx, config) {
     config.gapPercentage,
   ])
 
-  ctx.broadcast(ctx.connections, ctx.$user.id, config)
+  ctx.setConfig(ctx.$user.id, config)
 
   return null
 }

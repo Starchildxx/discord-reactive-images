@@ -58,5 +58,8 @@ export default async function (ctx, imageBase64) {
   })
 
   await ctx.query(`REPLACE images (discord_id, filename) VALUES (?, ?)`, [ctx.$user.id, filename])
+
+  ctx.setImage(ctx.$user.id, filename)
+
   return filename
 }

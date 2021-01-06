@@ -1,7 +1,6 @@
 import Cookie from 'cookie'
 import { API } from './nuxt-api.js'
 import { decodeJWT } from '../api'
-import { globalState } from '../modules/nuxt-api/handler.js'
 
 export default async function(ctx, inject) {
   const cookies = Cookie.parse(ctx.req.headers.cookie || '')
@@ -14,6 +13,7 @@ export default async function(ctx, inject) {
     } catch (_) {}
   }
 
-  inject('<%= options.variable %>', API(globalState, user))
+  // SSR only uses GET endpoints which don't need globalState
+  inject('<%= options.variable %>', API({}, user))
   inject('user', user)
 }
