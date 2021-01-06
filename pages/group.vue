@@ -338,6 +338,7 @@ body {
 .grid {
   display: grid;
   height: 100vh;
+  overflow: hidden;
 }
 
 .member {
