@@ -87,7 +87,7 @@ export default function (ctx) {
     })
 
     res.cookie('user', jwt, { secure: process.env.NODE_ENV === 'production' })
-    res.redirect(callbackDomain + (cookie.path || '/'))
+    res.redirect(ctx.callbackDomain + (cookie.path || '/'))
   })
 
   return app
