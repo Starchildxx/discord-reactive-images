@@ -40,7 +40,7 @@
                 thumb-label
               ></v-slider>
 
-              <v-btn block color="primary" type="submit">Apply</v-btn>
+              <v-btn block color="primary" type="submit" :disabled="configSaving" :loading="configSaving">Apply</v-btn>
 
               <v-alert v-if="configError" class="mt-4" type="error">
                 {{ configError }}
@@ -57,7 +57,7 @@
 
             <v-file-input v-model="imageFile" label="New Image" prepend-icon="mdi-camera" accept="image/*" show-size />
 
-            <v-btn block color="primary" :disabled="!imageData" @click="setImage">Save</v-btn>
+            <v-btn block color="primary" :disabled="!imageData || imageSaving" :loading="imageSaving" @click="setImage">Save</v-btn>
 
             <v-alert v-if="error" class="mt-4" type="error">
               {{ error }}
@@ -88,8 +88,10 @@ export default {
       error: null,
       imageFile: null,
       imageDataURL: null,
+      imageSaving: false,
 
       configError: null,
+      configSaving: false,
 
       links: {
         'Group Browser Source': 'https://discord-reactive-images.fugi.tech/group',
@@ -115,6 +117,7 @@ export default {
     },
     async setImage() {
       if (!this.imageData) return
+      this.imageSaving = true
 
       try {
         const image = await this.$api.set_image(this.imageData)
@@ -125,8 +128,12 @@ export default {
       } catch (err) {
         this.error = err.message
       }
+
+      this.imageSaving = false
     },
     async saveConfig() {
+      this.configSaving = true
+
       try {
         await this.$api.set_config({
           includeSelf: this.includeSelf,
@@ -138,6 +145,8 @@ export default {
       } catch (err) {
         this.configError = err.message
       }
+
+      this.configSaving = false
     },
     copyText(text) {
       navigator.clipboard.writeText(text)
