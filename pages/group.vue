@@ -107,7 +107,7 @@ export default {
         }
         this.configSocket.onerror = (err) => {
           console.error('EventSource failed:', err)
-          // connect()
+          setTimeout(connect, 1000)
         }
       }
 

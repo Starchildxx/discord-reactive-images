@@ -28,6 +28,7 @@ export default function(ctx) {
     res.set('Content-Type', 'text/event-stream')
     res.set('Cache-Control', 'no-cache')
     res.set('Connection', 'keep-alive')
+    res.set('X-Accel-Buffering', 'no')
     res.write(
       `data: ${JSON.stringify({
         includeSelf: !!config.include_self || false,
