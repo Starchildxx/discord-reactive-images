@@ -15,7 +15,7 @@ export async function query(statement, values) {
 export const callbackDomain =
   process.env.NODE_ENV === 'production' ? 'https://discord-reactive-images.fugi.tech' : 'http://localhost:3000'
 
-export const discordScopes = ['rpc', 'identify']
+export const discordScopes = 'rpc identify'
 
 export function nonce() {
   const word_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'

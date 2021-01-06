@@ -24,7 +24,7 @@ export default function (ctx) {
         response_type: 'code',
         scope: ctx.discordScopes,
         state: n,
-        consent: 'none',
+        prompt: 'none',
       })}`
     )
   })
