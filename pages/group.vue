@@ -97,7 +97,7 @@ export default {
       }
 
       const connect = () => {
-        this.configSocket = new WebSocket(`${location.scheme === 'https' ? 'wss' : 'ws'}://${location.host}/api`)
+        this.configSocket = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api`)
         this.configSocket.onopen = () => {
           this.configSocket.send(JSON.stringify({ jwt }))
           for (const [id, _] of this.avatars) {
