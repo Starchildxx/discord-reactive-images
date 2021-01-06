@@ -236,7 +236,7 @@ export default {
 
       try {
         const port = 6463 + (tries % 10)
-        this.socket = new WebSocket(`ws://127.0.0.1:${port}/?v=1&client_id=${process.env.DISCORD_ID}`)
+        this.socket = new WebSocket(`ws://127.0.0.1:${port}/?v=1&client_id=794365445557846066`)
       } catch (_) {
         this._handleClose({ code: 1006 })
         return
