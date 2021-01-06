@@ -28,20 +28,20 @@ export function nonce() {
   return result
 }
 
-const naclKey = Buffer.from(process.env.NACL_KEY, 'base64')
-const jwtKey = crypto.createSecretKey(process.env.JWT_KEY, 'base64')
+const naclKey = () => Buffer.from(process.env.NACL_KEY, 'base64')
+const jwtKey = () => crypto.createSecretKey(process.env.JWT_KEY, 'base64')
 
 export function encrypt(obj) {
   const message = Buffer.from(JSON.stringify(obj))
   const nonce = randomBytes(secretbox.nonceLength)
-  const box = secretbox(message, nonce, naclKey)
+  const box = secretbox(message, nonce, naclKey())
   return Buffer.from([...nonce, ...box]).toString('base64')
 }
 
 export function decrypt(str) {
   const data = Buffer.from(str, 'base64')
   const nonce = data.slice(0, secretbox.nonceLength)
-  const message = secretbox.open(data.slice(secretbox.nonceLength), nonce, naclKey)
+  const message = secretbox.open(data.slice(secretbox.nonceLength), nonce, naclKey())
   return JSON.parse(Buffer.from(message).toString('utf-8'))
 }
 
@@ -50,13 +50,13 @@ export async function encodeJWT(obj) {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(jwtKey)
+    .sign(jwtKey())
 
   return jwt
 }
 
 export async function decodeJWT(jwt) {
-  const { payload } = await VerifyJWT(jwt, jwtKey, {
+  const { payload } = await VerifyJWT(jwt, jwtKey(), {
     algorithms: ['HS256'],
   })
   return payload
