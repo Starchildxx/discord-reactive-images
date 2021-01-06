@@ -1,0 +1,37 @@
+{
+  "name": "vtuber.directory",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1.0",
+    "@nuxt/typescript-runtime": "^2.0.0",
+    "cookie-parser": "^1.4.5",
+    "core-js": "^3.8.1",
+    "imagemin": "^7.0.1",
+    "imagemin-pngquant": "^9.0.1",
+    "jose": "^3.0.0",
+    "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.20",
+    "luxon": "^1.25.0",
+    "mysql2": "^2.2.5",
+    "nuxt": "^2.14.9",
+    "sharp": "^0.27.0",
+    "tweetnacl": "^1.0.3",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.14.9",
+    "@nuxt/typescript-build": "^2.0.3",
+    "@nuxtjs/vuetify": "^1.11.2",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "globby": "^11.0.1",
+    "prettier": "^2.2.1"
+  }
+}
