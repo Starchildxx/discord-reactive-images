@@ -174,7 +174,7 @@ export default {
     async evt_READY() {
       if (!this.config.token) {
         const d = await this.request('AUTHORIZE', {
-          client_id: process.env.DISCORD_ID,
+          client_id: '794365445557846066',
           scopes: ['rpc', 'identify'],
           prompt: 'none',
         })
