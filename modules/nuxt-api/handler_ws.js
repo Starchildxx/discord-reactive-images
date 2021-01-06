@@ -1,30 +1,32 @@
 import * as ctx from '../../api/index.js'
 
-export default function (wss, globalState) {
-  const connections = new Map()
-  let connCounter = 0
+global.wsConnectionInfo = {
+  connCounter: 0,
+  connections: new Map(),
+}
 
-  globalState.setConfig = (id, config) => {
-    for (const [_, state] of connections) {
-      if (state.user && state.user.id === id) {
-        state.ws.send(JSON.stringify({ config }))
-      }
+export function setConfig(id, config) {
+  for (const [_, state] of wsConnectionInfo.connections) {
+    if (state.user && state.user.id === id) {
+      state.ws.send(JSON.stringify({ config }))
     }
   }
+}
 
-  globalState.setImage = (id, image) => {
-    const avatars = {}
-    avatars[id] = image
+export function setImage (id, image) {
+  const avatars = {}
+  avatars[id] = image
 
-    for (const [_, state] of connections) {
-      if (state.avatars.has(id)) {
-        state.ws.send(JSON.stringify({ avatars }))
-      }
+  for (const [_, state] of wsConnectionInfo.connections) {
+    if (state.avatars.has(id)) {
+      state.ws.send(JSON.stringify({ avatars }))
     }
   }
+}
 
+export default function (wss) {
   wss.on('connection', (ws) => {
-    const connID = `${++connCounter}`
+    const connID = `${++wsConnectionInfo.connCounter}`
 
     const localState = {
       connID,
@@ -32,9 +34,9 @@ export default function (wss, globalState) {
       avatars: new Set(),
     }
 
-    connections.set(connID, localState)
+    wsConnectionInfo.connections.set(connID, localState)
     ws.on('close', () => {
-      connections.delete(connID)
+      wsConnectionInfo.connections.delete(connID)
     })
 
     ws.on('message', async (msg) => {

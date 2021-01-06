@@ -3,11 +3,7 @@ import fs from 'fs'
 import globby from 'globby'
 
 import ws from 'ws'
-import express from 'express'
-import API from './handler_api'
-import Auth from './handler_auth'
 import Websockets from './handler_ws'
-
 
 const defaultOptions = {
   // folder to load API methods from
@@ -24,16 +20,23 @@ export default async function NuxtAPI(moduleOptions) {
   const options = Object.assign({}, defaultOptions, this.options.api, moduleOptions)
   const { nuxt } = this
 
-  const getDir = p => fs.statSync(p).isDirectory() ? p : path.dirname(p)
+  const getDir = (p) => (fs.statSync(p).isDirectory() ? p : path.dirname(p))
 
   let dirPath = options.dir
-  try { dirPath = getDir(nuxt.resolver.resolvePath(dirPath)) } catch (err) { console.error(err) }
+  try {
+    dirPath = getDir(nuxt.resolver.resolvePath(dirPath))
+  } catch (err) {
+    console.error(err)
+  }
   nuxt.options.build.watch.push(dirPath)
 
   let authDirPath = options.authDir
-  try { authDirPath = getDir(nuxt.resolver.resolvePath(authDirPath)) } catch (err) { console.error(err) }
+  try {
+    authDirPath = getDir(nuxt.resolver.resolvePath(authDirPath))
+  } catch (err) {
+    console.error(err)
+  }
   nuxt.options.build.watch.push(authDirPath)
-
 
   let apiMethods = []
   let authMethods = []
@@ -60,24 +63,18 @@ export default async function NuxtAPI(moduleOptions) {
     options,
   })
 
-  const globalState = {}
-  const app = express()
-  app.use('/api', API(globalState))
-  app.use('/auth', Auth(globalState))
-
   this.addServerMiddleware({
     path: '/',
-    handler: app,
+    handler: path.resolve(__dirname, 'handler.js'),
   })
 
-  nuxt.hook('listen', server => {
+  nuxt.hook('listen', (server) => {
     const wss = new ws.Server({ server })
-    Websockets(wss, globalState)
+    Websockets(wss)
   })
-
 
   let builderExtensions = []
-  nuxt.hook('build:before', builder => {
+  nuxt.hook('build:before', (builder) => {
     builderExtensions = builder.supportedExtensions
   })
 
@@ -88,10 +85,10 @@ export default async function NuxtAPI(moduleOptions) {
 
     for (const fileName of await globby(`**/*.{${extensions.join(',')},}`, { cwd: dirPath })) {
       let key = fileName.split(path.sep)
-      key[key.length-1] = path.basename(key[key.length-1], path.extname(key[key.length-1]))
-      if (key[key.length-1].toLowerCase() === 'index') key.pop()
+      key[key.length - 1] = path.basename(key[key.length - 1], path.extname(key[key.length - 1]))
+      if (key[key.length - 1].toLowerCase() === 'index') key.pop()
 
-      if (key.some(v => v.includes('.'))) throw new Error('API filenames may not contain 2+ periods')
+      if (key.some((v) => v.includes('.'))) throw new Error('API filenames may not contain 2+ periods')
 
       apiMethods.push({
         import: '_api_import_' + key.join('_'),
@@ -104,10 +101,10 @@ export default async function NuxtAPI(moduleOptions) {
 
     for (const fileName of await globby(`**/*.{${extensions.join(',')},}`, { cwd: authDirPath })) {
       let key = fileName.split(path.sep)
-      key[key.length-1] = path.basename(key[key.length-1], path.extname(key[key.length-1]))
-      if (key[key.length-1].toLowerCase() === 'index') key.pop()
+      key[key.length - 1] = path.basename(key[key.length - 1], path.extname(key[key.length - 1]))
+      if (key[key.length - 1].toLowerCase() === 'index') key.pop()
 
-      if (key.some(v => v.includes('.'))) throw new Error('Auth filenames may not contain 2+ periods')
+      if (key.some((v) => v.includes('.'))) throw new Error('Auth filenames may not contain 2+ periods')
 
       authMethods.push({
         import: '_auth_import_' + key.join('_'),
