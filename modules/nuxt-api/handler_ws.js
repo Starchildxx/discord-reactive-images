@@ -13,7 +13,7 @@ export function setConfig(id, config) {
   }
 }
 
-export function setImage (id, image) {
+export function setImage(id, image) {
   const avatars = {}
   avatars[id] = image
 
@@ -34,8 +34,14 @@ export default function (wss) {
       avatars: new Set(),
     }
 
+    // Send ping frame every 15 seconds to keep connection alive
+    const i = setInterval(() => {
+      ws.send('{}')
+    }, 15 * 1000)
+
     wsConnectionInfo.connections.set(connID, localState)
     ws.on('close', () => {
+      clearInterval(i)
       wsConnectionInfo.connections.delete(connID)
     })
 

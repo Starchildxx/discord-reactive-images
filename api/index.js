@@ -61,26 +61,3 @@ export async function decodeJWT(jwt) {
   })
   return payload
 }
-
-
-export function join(connections, id, res) {
-  const conns = connections.get(id) || new Set()
-  conns.add(res)
-  connections.set(id, conns)
-
-  // Close connection after 15min
-  setTimeout(() => {
-    conns.delete(res)
-    res.end()
-  }, 15 * 60 * 1000)
-}
-
-export function broadcast(connections, id, config) {
-  const conns = connections.get(id)
-  if (!conns) return
-
-  const line = `data: ${JSON.stringify(config)}\n\n`
-  for (const c of conns) {
-    c.write(line)
-  }
-}
