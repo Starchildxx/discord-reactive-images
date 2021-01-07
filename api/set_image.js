@@ -27,7 +27,7 @@ export default async function (ctx, imageBase64) {
 
   const imageBuffer = Buffer.from(imageBase64, 'base64')
 
-  const rawImage = await sharp(imageBuffer).resize({
+  const rawImage = await sharp(imageBuffer).trim().resize({
     width: 1920,
     height: 1080,
     fit: 'inside',

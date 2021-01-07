@@ -8,8 +8,11 @@
             :key="m.id"
             class="member"
             :class="{ speaking: m.speaking }"
-            :style="{ backgroundImage: `url(${m.image})`, ...memberStyle }"
-          ></div>
+            :style="memberStyle"
+          >
+            <v-spacer />
+            <img :src="m.image" />
+          </div>
         </div>
       </template>
     </client-only>
@@ -361,9 +364,9 @@ body {
 }
 
 .member {
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
   filter: brightness(50%);
   transition: filter 200ms linear;
 }
@@ -379,6 +382,10 @@ body {
 
 .bounce .member.speaking {
   animation: 200ms bounce;
+}
+
+.member img {
+  width: 100%;
 }
 
 @keyframes bounce {
