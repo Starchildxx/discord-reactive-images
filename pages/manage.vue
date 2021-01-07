@@ -23,6 +23,13 @@
                 </v-tooltip>
               </template>
             </v-text-field>
+
+            <div class="text-caption">
+              Copy one of the links above and add it to OBS as a browser source. Set the height & width to the max size
+              you're willing for the images to take up.
+              <strong>Warning:</strong> Images can re-arrange or re-size when users join or leave, so do not rely on
+              this to hide sensitive information like Among Us room codes.
+            </div>
           </v-card-text>
         </v-card>
 
@@ -32,13 +39,7 @@
             <v-form @submit.prevent="saveConfig">
               <v-switch label="Include Self" v-model="includeSelf"></v-switch>
               <v-switch label="Bounce Effect" v-model="bounce"></v-switch>
-              <v-slider
-                label="Image Spacing"
-                v-model="gapPercentage"
-                min="-500"
-                max="50"
-                thumb-label
-              ></v-slider>
+              <v-slider label="Image Spacing" v-model="gapPercentage" min="-500" max="50" thumb-label></v-slider>
 
               <v-btn block color="primary" type="submit" :disabled="configSaving" :loading="configSaving">Apply</v-btn>
 
@@ -57,7 +58,9 @@
 
             <v-file-input v-model="imageFile" label="New Image" prepend-icon="mdi-camera" accept="image/*" show-size />
 
-            <v-btn block color="primary" :disabled="!imageData || imageSaving" :loading="imageSaving" @click="setImage">Save</v-btn>
+            <v-btn block color="primary" :disabled="!imageData || imageSaving" :loading="imageSaving" @click="setImage">
+              Save
+            </v-btn>
 
             <v-alert v-if="error" class="mt-4" type="error">
               {{ error }}

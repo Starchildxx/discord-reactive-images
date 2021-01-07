@@ -1,7 +1,11 @@
 <template>
   <v-app dark>
     <v-app-bar app>
-      <v-toolbar-title class="hidden-xs-only">Discord Reactive Images</v-toolbar-title>
+      <v-toolbar-title class="hidden-xs-only">
+        <nuxt-link to="/" exact class="title-link">
+          Discord Reactive Images
+        </nuxt-link>
+      </v-toolbar-title>
       <v-spacer />
 
       <template v-if="$user">
@@ -20,6 +24,13 @@
     <v-main>
       <nuxt />
     </v-main>
+    <v-footer>
+      <div class="text-caption">
+        Made by <a href="https://twitter.com/Fugiman">Fugi</a>.
+        <a href="https://github.com/Fugiman/discord-reactive-images">Source code available on Github</a>.
+        For issues or suggestions at me on Twitter or file an issue on Github.
+      </div>
+    </v-footer>
   </v-app>
 </template>
 
@@ -39,5 +50,10 @@ export default {
 <style>
 html {
   overflow-y: auto;
+}
+
+.title-link {
+  color: inherit !important;
+  text-decoration: none;
 }
 </style>
