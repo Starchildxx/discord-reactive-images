@@ -69,7 +69,7 @@ export default async function NuxtAPI(moduleOptions) {
   })
 
   nuxt.hook('listen', (server) => {
-    const wss = new ws.Server({ server })
+    const wss = new ws.Server({ server, path: '/api' })
     Websockets(wss)
   })
 

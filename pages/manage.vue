@@ -33,7 +33,7 @@
               <v-switch label="Include Self" v-model="includeSelf"></v-switch>
               <v-switch label="Bounce Effect" v-model="bounce"></v-switch>
               <v-slider
-                label="Overlap/Gap Percentage"
+                label="Image Spacing"
                 v-model="gapPercentage"
                 min="-500"
                 max="50"

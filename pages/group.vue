@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import jwt_decode from 'jwt-decode'
+
 export default {
   layout: 'empty',
   data() {
@@ -46,6 +48,7 @@ export default {
     gridStyle() {
       return {
         'grid-template-columns': `repeat(${this.visibleMembers.length}, 1fr)`,
+        padding: `0 calc(-1 * ${this.config.gapPercentage}% / ${this.visibleMembers.length})`,
       }
     },
     memberStyle() {
@@ -131,6 +134,16 @@ export default {
       this.config = JSON.parse(localStorage.getItem('config')) || {}
     } catch (_) {}
 
+    if (this.config.jwt) {
+      const now = 600 + new Date() / 1000
+      const jwt = jwt_decode(this.config.jwt)
+      if (now >= jwt.exp) {
+        localStorage.removeItem('config')
+        location.reload()
+        return
+      }
+    }
+
     this.connect()
   },
   beforeDestroy() {
@@ -193,7 +206,13 @@ export default {
         console.log('authorize', d)
         this.config = await this.$api.code(d.code)
       }
-      await this.request('AUTHENTICATE', { access_token: this.config.token })
+      try {
+        await this.request('AUTHENTICATE', { access_token: this.config.token })
+      } catch (_) {
+        localStorage.removeItem('config')
+        location.reload()
+        return
+      }
       await this.request('SUBSCRIBE', {}, 'VOICE_CHANNEL_SELECT')
       const channel = await this.request('GET_SELECTED_VOICE_CHANNEL')
       if (channel) this.subscribe(channel.id)
