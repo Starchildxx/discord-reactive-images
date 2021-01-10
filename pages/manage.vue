@@ -62,6 +62,10 @@
               Save
             </v-btn>
 
+            <v-btn class="mt-3" block color="red" :disabled="!currentImage || imageSaving" :loading="imageSaving" @click="clearImage">
+              Revert to Discord avatar
+            </v-btn>
+
             <v-alert v-if="error" class="mt-4" type="error">
               {{ error }}
             </v-alert>
@@ -98,6 +102,7 @@ export default {
 
       links: {
         'Group Browser Source': 'https://discord-reactive-images.fugi.tech/group',
+        'Individual Browser Source (You)': `https://discord-reactive-images.fugi.tech/individual/${this.$user && this.$user.id}`,
       },
     }
   },
@@ -124,6 +129,22 @@ export default {
 
       try {
         const image = await this.$api.set_image(this.imageData)
+
+        this.currentImage = image
+        this.imageFile = null
+        this.error = null
+      } catch (err) {
+        this.error = err.message
+      }
+
+      this.imageSaving = false
+    },
+    async clearImage() {
+      if (!this.currentImage) return
+      this.imageSaving = true
+
+      try {
+        const image = await this.$api.set_image(null)
 
         this.currentImage = image
         this.imageFile = null

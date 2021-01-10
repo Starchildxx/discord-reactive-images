@@ -22,6 +22,7 @@ export default async function (ctx, imageBase64) {
 
   if (!imageBase64) {
     await ctx.query(`DELETE FROM images WHERE discord_id = ?`, [ctx.$user.id])
+    ctx.setImage(ctx.$user.id, null)
     return null
   }
 
