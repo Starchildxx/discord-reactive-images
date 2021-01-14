@@ -126,6 +126,7 @@ export default {
       const now = 600 + new Date() / 1000
       const jwt = jwt_decode(this.config.jwt)
       if (now >= jwt.exp) {
+        this.config = {}
         localStorage.removeItem('config')
         location.reload()
         return
