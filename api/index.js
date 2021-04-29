@@ -66,7 +66,7 @@ export async function decodeJWT(jwt) {
 export async function getImages(broadcaster_id, guest_id) {
   if (broadcaster_id) {
     const { results } = await query(`SELECT inactive, speaking FROM overrides WHERE broadcaster_discord_id = ? AND guest_discord_id = ?`, [broadcaster_id, guest_id])
-    if (results && results.length) {
+    if (results && results.length && (results[0].inactive || results[0].speaking)) {
       return {
         inactive: results[0].inactive,
         speaking: results[0].speaking,
