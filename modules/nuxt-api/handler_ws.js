@@ -13,12 +13,14 @@ export function setConfig(id, config) {
   }
 }
 
-export function setImage(id, image) {
+export function setImage(broadcaster_id, guest_id, purpose, image) {
   const avatars = {}
-  avatars[id] = image
+  avatars[guest_id] = {}
+  avatars[guest_id][purpose] = image
 
   for (const [_, state] of wsConnectionInfo.connections) {
-    if (state.avatars.has(id)) {
+    const isBroadcaster = state.user && state.user.id === broadcaster_id
+    if (state.avatars.has(guest_id) && (broadcaster_id === guest_id || isBroadcaster)) {
       state.ws.send(JSON.stringify({ avatars }))
     }
   }
@@ -72,11 +74,10 @@ export default function (wss) {
       if (d.avatar) {
         localState.avatars.add(d.avatar)
 
-        const { results } = await ctx.query(`SELECT filename FROM images WHERE discord_id = ?`, [d.avatar])
-        const image = results && results.length ? results[0].filename : null
+        const images = await ctx.getImages(localState.user && localState.user.id, d.avatar)
 
         const avatars = {}
-        avatars[d.avatar] = image
+        avatars[d.avatar] = images
         ws.send(JSON.stringify({ avatars }))
       }
     })

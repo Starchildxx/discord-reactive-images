@@ -19,8 +19,7 @@ export default async function (ctx, code) {
 
   if (!tokenResp.ok) {
     console.log('Bad token response', tokenData)
-    res.status(400).send()
-    return
+    throw new Error('Bad token response')
   }
 
   const userResp = await fetch(`https://discord.com/api/users/@me`, {
@@ -32,8 +31,7 @@ export default async function (ctx, code) {
 
   if (!userResp.ok || !userData.id) {
     console.log('Bad user response', userData)
-    res.status(400).send()
-    return
+    throw new Error('Bad user response')
   }
 
   const jwt = await ctx.encodeJWT({

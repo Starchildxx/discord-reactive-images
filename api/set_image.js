@@ -17,12 +17,20 @@ s3.middlewareStack.add(
   {step: 'build'},
 )
 
-export default async function (ctx, imageBase64) {
+export default async function (ctx, { image: imageBase64, user, purpose }) {
   if (!ctx.$user) throw new Error('Must be logged in')
 
+  if (!['inactive', 'speaking'].includes(purpose)) {
+    throw new Error('Invalid purpose')
+  }
+
   if (!imageBase64) {
-    await ctx.query(`DELETE FROM images WHERE discord_id = ?`, [ctx.$user.id])
-    ctx.setImage(ctx.$user.id, null)
+    if (ctx.$user.id === user) {
+      await ctx.query(`UPDATE images SET ${purpose} = NULL WHERE discord_id = ?`, [user])
+    } else {
+      await ctx.query(`UPDATE overrides SET ${purpose} = NULL WHERE broadcaster_discord_id = ? AND guest_discord_id = ?`, [ctx.$user.id, user])
+    }
+    ctx.setImage(ctx.$user.id, user, purpose, null)
     return null
   }
 
@@ -58,9 +66,19 @@ export default async function (ctx, imageBase64) {
 
   })
 
-  await ctx.query(`REPLACE images (discord_id, filename) VALUES (?, ?)`, [ctx.$user.id, filename])
+  if (ctx.$user.id === user) {
+    await ctx.query(`
+      INSERT INTO images (discord_id, filename, ${purpose}) VALUES (?, '', ?)
+      ON DUPLICATE KEY UPDATE ${purpose} = ?
+    `, [user, filename, filename])
+  } else {
+    await ctx.query(`
+      INSERT INTO overrides (broadcaster_discord_id, guest_discord_id, ${purpose}) VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE ${purpose} = ?
+    `, [ctx.$user.id, user, filename, filename])
+  }
 
-  ctx.setImage(ctx.$user.id, filename)
+  ctx.setImage(ctx.$user.id, user, purpose, filename)
 
   return filename
 }
