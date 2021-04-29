@@ -1,5 +1,5 @@
 # Stage 1: Build static site
-FROM node:alpine
+FROM node:15-alpine
 WORKDIR /app
 
 # Install dependencies for node-gyp compiling
