@@ -56,8 +56,8 @@
                             title="Set Inactive Image"
                             v-model="l.settings.inactive"
                             :fallback="l.settings.speaking"
+                            :base="l.settings.inactiveBase"
                             :user="l.settings.id"
-                            :avatar="l.settings.avatar"
                             purpose="inactive"
                           />
                         </v-col>
@@ -67,8 +67,8 @@
                             title="Set Speaking Image"
                             v-model="l.settings.speaking"
                             :fallback="l.settings.inactive"
+                            :base="l.settings.speakingBase"
                             :user="l.settings.id"
-                            :avatar="l.settings.avatar"
                             purpose="speaking"
                           />
                         </v-col> </v-row
@@ -121,8 +121,8 @@
           title="Set Speaking Image"
           v-model="currentImages.speaking"
           :fallback="currentImages.inactive"
+          :base="currentImages.base"
           :user="$user.id"
-          :avatar="$user.avatar"
           purpose="speaking"
         />
       </v-col>
@@ -135,14 +135,15 @@ import { defineComponent, computed, useContext, toRefs, reactive, ref } from '@n
 import { useDiscordRPC } from '~/assets/discordrpc'
 
 interface Link {
-  label: String
-  value: String
+  label: string
+  value: string
   settings?: {
-    id: String
-    name: String
-    avatar: String
-    speaking?: String
-    inactive?: String
+    id: string
+    name: string
+    speaking?: string
+    inactive?: string
+    speakingBase: string
+    inactiveBase: string
   }
 }
 
@@ -161,10 +162,14 @@ export default defineComponent({
     const currentImages = ref({
       inactive: null,
       speaking: null,
+      base: null,
     })
     if ($user) {
       $api.get_image($user.id).then((v: any) => {
-        currentImages.value = v
+        currentImages.value = {
+          ...v,
+          base: `https://cdn.discordapp.com/avatars/${$user.id}/${$user.avatar}.png?size=1024`,
+        }
       })
     }
 
@@ -191,9 +196,16 @@ export default defineComponent({
           settings: {
             id: m.id,
             name: m.name,
-            avatar: m.avatar,
-            speaking: m.rawImages?.speaking,
-            inactive: m.rawImages?.inactive,
+            speaking: m.rawImages?.speakingOverride,
+            inactive: m.rawImages?.inactiveOverride,
+            speakingBase:
+              (m.rawImages?.speaking && `https://cdn.discord-reactive-images.fugi.tech/${m.rawImages?.speaking}`) ||
+              (m.rawImages?.inactive && `https://cdn.discord-reactive-images.fugi.tech/${m.rawImages?.inactive}`) ||
+              `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
+            inactiveBase:
+              (m.rawImages?.inactive && `https://cdn.discord-reactive-images.fugi.tech/${m.rawImages?.inactive}`) ||
+              (m.rawImages?.speaking && `https://cdn.discord-reactive-images.fugi.tech/${m.rawImages?.speaking}`) ||
+              `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
           },
         })
       }

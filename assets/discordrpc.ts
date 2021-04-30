@@ -22,6 +22,8 @@ export interface Member {
 export interface Images {
   inactive: string
   speaking: string
+  inactiveOverride?: string
+  speakingOverride?: string
 }
 
 interface ConfigSocketEvent {
@@ -105,10 +107,12 @@ export function useDiscordRPC() {
         const images = avatars.get(m.id)
         const inactive = images && images.inactive ? `https://cdn.discord-reactive-images.fugi.tech/${images.inactive}` : null
         const speaking = images && images.speaking ? `https://cdn.discord-reactive-images.fugi.tech/${images.speaking}` : null
+        const inactiveOverride = images && images.inactiveOverride ? `https://cdn.discord-reactive-images.fugi.tech/${images.inactiveOverride}` : null
+        const speakingOverride = images && images.speakingOverride ? `https://cdn.discord-reactive-images.fugi.tech/${images.speakingOverride}` : null
 
         m.images = {
-          inactive: inactive || speaking || `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
-          speaking: speaking || inactive || `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
+          inactive: inactiveOverride || speakingOverride || inactive || speaking || `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
+          speaking: speakingOverride || inactiveOverride || speaking || inactive || `https://cdn.discordapp.com/avatars/${m.id}/${m.avatar}.png?size=1024`,
         }
         m.rawImages = images
 

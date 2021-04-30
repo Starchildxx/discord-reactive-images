@@ -14,6 +14,10 @@ export function setConfig(id, config) {
 }
 
 export function setImage(broadcaster_id, guest_id, purpose, image) {
+  if (broadcaster_id !== guest_id) {
+    purpose += 'Override'
+  }
+
   const avatars = {}
   avatars[guest_id] = {}
   avatars[guest_id][purpose] = image

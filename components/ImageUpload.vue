@@ -43,11 +43,11 @@ export default defineComponent({
     fallback: {
       type: String,
     },
-    user: {
+    base: {
       type: String,
       required: true,
     },
-    avatar: {
+    user: {
       type: String,
       required: true,
     },
@@ -72,7 +72,7 @@ export default defineComponent({
         data.imageDataURL ||
         (props.value && `https://cdn.discord-reactive-images.fugi.tech/${props.value}`) ||
         (props.fallback && `https://cdn.discord-reactive-images.fugi.tech/${props.fallback}`) ||
-        `https://cdn.discordapp.com/avatars/${props.user}/${props.avatar}.png?size=1024`
+        props.base
     )
 
     const imageData = computed(() => (data.imageDataURL ? data.imageDataURL.replace(/^.*?;base64,/, '') : null))
