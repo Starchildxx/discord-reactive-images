@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app dark>
     <v-overlay :value="error">
       <v-alert type="error" outlined>{{ error }}</v-alert>
     </v-overlay>
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -29,7 +29,6 @@ import { defineComponent, computed } from '@nuxtjs/composition-api'
 import { useDiscordRPC } from '~/assets/discordrpc'
 
 export default defineComponent({
-  layout: 'empty',
   setup() {
     const { members, config, error } = useDiscordRPC()
 
@@ -65,6 +64,11 @@ export default defineComponent({
 body {
   color: white;
   background: black;
+}
+
+.v-application {
+  background: none;
+  color: inherit;
 }
 
 .grid {

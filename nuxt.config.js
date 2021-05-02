@@ -40,6 +40,7 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    '@nuxtjs/redirect-module',
     '~/modules/nuxt-api',
   ],
 
@@ -49,6 +50,10 @@ export default {
   env: {
     DISCORD_ID: process.env.DISCORD_ID,
   },
+
+  redirect: [
+    { from: '^/manage', to: '/' },
+  ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {

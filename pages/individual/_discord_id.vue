@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-app dark>
     <v-overlay :value="error">
       <v-alert type="error" outlined>{{ error }}</v-alert>
     </v-overlay>
@@ -7,7 +7,7 @@
       <div class="member inactive" :style="{backgroundImage: inactiveImg}"></div>
       <div class="member speaking" :style="{backgroundImage: speakingImg}"></div>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -15,7 +15,6 @@ import { defineComponent, computed, useContext } from '@nuxtjs/composition-api'
 import { useDiscordRPC, Member } from '~/assets/discordrpc'
 
 export default defineComponent({
-  layout: 'empty',
   setup() {
     // @ts-ignore
     const { params } = useContext()
@@ -43,6 +42,11 @@ export default defineComponent({
 body {
   color: white;
   background: black;
+}
+
+.v-application {
+  background: none;
+  color: inherit;
 }
 
 .grid {

@@ -2,7 +2,7 @@
   <v-card flat>
     <v-card-title> {{ title }} </v-card-title>
     <v-card-text>
-      <v-img class="mb-4" :src="imagePreview" max-height="1080" contain />
+      <v-img class="mb-4" :src="imagePreview" max-height="1080" :aspect-ratio="9 / 16" contain />
 
       <v-file-input v-model="imageFile" label="New Image" prepend-icon="mdi-camera" accept="image/*" show-size />
 
