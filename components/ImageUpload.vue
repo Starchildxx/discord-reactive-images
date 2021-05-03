@@ -2,16 +2,16 @@
   <v-card flat>
     <v-card-title> {{ title }} </v-card-title>
     <v-card-text>
-      <v-img class="mb-4" :src="imagePreview" max-height="1080" :aspect-ratio="9 / 16" contain />
+      <v-img class="mb-4" :src="imagePreview" max-height="min(1080px, calc(98vh - 400px))" :aspect-ratio="9 / 16" contain />
 
       <v-file-input v-model="imageFile" label="New Image" prepend-icon="mdi-camera" accept="image/*" show-size />
 
-      <v-btn block color="primary" :disabled="!imageData || imageSaving" :loading="imageSaving" @click="setImage">
+      <v-btn class="image-upload-save" block color="primary" :disabled="!imageData || imageSaving" :loading="imageSaving" @click="setImage">
         Save
       </v-btn>
 
       <v-btn
-        class="mt-3"
+        class="mt-3 image-upload-revert"
         block
         color="red"
         :disabled="!value || imageSaving"
