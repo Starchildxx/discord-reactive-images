@@ -67,8 +67,8 @@ body {
 }
 
 .v-application {
-  background: none;
-  color: inherit;
+  background: none !important;
+  color: inherit !important;
 }
 
 .grid {
