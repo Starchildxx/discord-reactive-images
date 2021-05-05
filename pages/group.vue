@@ -95,23 +95,29 @@ body {
   display: flex;
   flex-direction: column;
   max-height: 100vh;
-  transition: opacity 200ms linear;
 }
 
 .member .inactive {
   filter: brightness(50%);
   opacity: 1;
+  z-index: 2;
+  transition: opacity 300ms cubic-bezier(0,0,.5,1);
 }
 .member.speaking .inactive {
   opacity: 0;
+  z-index: 1;
+  transition: opacity 300ms cubic-bezier(0.5,0,1,1);
 }
 
 .member .speaking {
   opacity: 0;
   z-index: 1;
+  transition: opacity 300ms cubic-bezier(0.5,0,1,1);
 }
 .member.speaking .speaking {
   opacity: 1;
+  z-index: 2;
+  transition: opacity 300ms cubic-bezier(0,0,.5,1);
 }
 
 .member img {

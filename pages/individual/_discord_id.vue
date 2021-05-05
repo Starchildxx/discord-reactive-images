@@ -59,23 +59,29 @@ body {
   grid-area: 1 / 1;
   background-size: contain;
   background-position: top center;
-  transition: opacity 200ms linear;
 }
 
 .member.inactive {
   filter: brightness(50%);
   opacity: 1;
+  z-index: 2;
+  transition: opacity 300ms cubic-bezier(0,0,.5,1);
 }
 .speaking .member.inactive {
   opacity: 0;
+  z-index: 1;
+  transition: opacity 300ms cubic-bezier(0.5,0,1,1);
 }
 
 .member.speaking {
   opacity: 0;
   z-index: 1;
+  transition: opacity 300ms cubic-bezier(0.5,0,1,1);
 }
 .speaking .member.speaking {
   opacity: 1;
+  z-index: 2;
+  transition: opacity 300ms cubic-bezier(0,0,.5,1);
 }
 
 .bounce .member {
